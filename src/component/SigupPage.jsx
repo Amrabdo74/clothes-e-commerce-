@@ -1,25 +1,38 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Authcontext } from "../context/Authcontext";
+import { signUpAsync } from "../Store/slices/authSlice";
+// import { Authcontext } from "../context/Authcontext";
 
 function SigupPage() {
-  const myContect = useContext(Authcontext);
+  // const myContect = useContext(Authcontext);
   const [error, setError] = useState("");
+  const dispatch = useDispatch()
   const [isloading, setisloading] = useState(false); 
   const emailRef = useRef();
   const passwordRef = useRef();
+  const nameRef = useRef();
   const repetpasswordRef = useRef();
   const navigate = useNavigate()
   const handleSubmit = async (e) => {
+    console.log(2);
     e.preventDefault();
     if (passwordRef.current.value !== repetpasswordRef.current.value) {
       return setError('Passwords do not match');
     }
+    const userData = {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      username: nameRef.current.value
+    };
     try {
       setError("");
       setisloading(true);
-      await myContect.singup(emailRef.current.value, passwordRef.current.value);
+      dispatch(signUpAsync(userData))
       navigate('/')
+      emailRef.current.value= '';
+       passwordRef.current.value ='';
+       nameRef.current.value = '';
     } catch (error) {
       setError("Failed to create account: " + error.message);
     }
@@ -43,7 +56,7 @@ function SigupPage() {
                     </div>
                   )}
                   <form onSubmit={handleSubmit}>
-                    {/* <div className="form-outline mb-4">
+                    <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="form3Example1cg">
                         Your Name
                       </label>
@@ -51,8 +64,10 @@ function SigupPage() {
                         type="text"
                         id="form3Example1cg"
                         className="form-control form-control-lg"
+                        ref={nameRef}
+                        required
                       />
-                    </div> */}
+                    </div>
 
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="form3Example3cg">

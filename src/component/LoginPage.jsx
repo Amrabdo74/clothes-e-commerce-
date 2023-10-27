@@ -1,33 +1,40 @@
-import { useContext, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { BsFacebook, BsGithub, BsGoogle, BsTwitter } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
-import { Authcontext } from "../context/Authcontext";
+import { logInAsync } from "../Store/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getFromlocaStore } from "../Store/slices/cartSlice";
 
 function LoginPage() {
-  const myContect = useContext(Authcontext);
-  const [error, setError] = useState("");
-  const [isloading, setisloading] = useState(false);
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const error = useSelector((state) => state.auth.error);
+  const isloading = useSelector((state) => state.auth.isLoading);
   const emailRef = useRef();
   const passwordRef = useRef();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      setError("");
-      setisloading(true);
-      await myContect.login(emailRef.current.value, passwordRef.current.value);
-      navigate('/Home' ,{replace: false});
-    } catch (error) {
-      setError("Failed to Login Email or Password isn't correct");
-    }
-    setisloading(false);
+    const userData = {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    };
+    dispatch(logInAsync(userData));
   };
+  useEffect(() => {
+    const cartLocalstorge = JSON.parse(localStorage.getItem("cart"));
+    dispatch(getFromlocaStore(cartLocalstorge));
+  }, []);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/", { replace: true });
+    }
+  }, [currentUser, navigate]);
   return (
     <>
       <form
         onSubmit={handleSubmit}
-        className="container position-absolute top-50 start-50  translate-middle "
+        className="container position-absolute top-50 start-50  translate-middle z-n1  "
       >
         <h2 className="text-center mb-3">Login In</h2>
         {error && (

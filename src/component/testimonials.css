@@ -1,0 +1,22 @@
+/* .client__avatar img {
+    width: 150px;
+}
+#testimonials {
+    height: 90vh !important;
+}
+/* .swiper-wrapper {justify-content: center;} */
+.swiper-pagination{
+    bottom: 0px !important;
+}
+.swiper {
+    padding-bottom: 120px !important;
+}
+.swiper-pagination-bullet {
+    padding: 8px;
+} 
+#testimonials {
+margin-top: 60px;
+}
+#testimonials h2{
+    margin-bottom:  20px !important;
+}

@@ -1,9 +1,12 @@
-import { useContext, useRef, useState } from "react";
+import {  useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Authcontext } from "../context/Authcontext";
+import { resetPasswordAsync } from "../Store/slices/authSlice";
+// import { Authcontext } from "../context/Authcontext";
 
 function ForgotpwPage() {
-  const myContect = useContext(Authcontext);
+  // const myContect = useContext(Authcontext);
+  const dispatch = useDispatch()
   const [error, setError] = useState("");
   const [isloading, setisloading] = useState(false);
   const emailRef = useRef();
@@ -14,7 +17,7 @@ function ForgotpwPage() {
     try {
       setError("check your email");
       setisloading(true);
-      await myContect.restPaswords(emailRef.current.value);
+      dispatch(resetPasswordAsync(emailRef.current.value))
       // navigate('/')
     } catch (error) {
       setError("Faild to reset Email: " + error.message);
@@ -62,7 +65,7 @@ function ForgotpwPage() {
 
                     <p className="text-center text-muted mt-5 mb-0">
                       Go To Login Page{" "}
-                      <Link to="/" className="fw-bold text-body">
+                      <Link to="/Login" className="fw-bold text-body">
                         <u>Login Page</u>
                       </Link>
                     </p>

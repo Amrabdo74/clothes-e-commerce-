@@ -1,22 +1,29 @@
-import { useContext, useEffect } from "react";
-import { Authcontext } from "../context/Authcontext";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+// import { Authcontext } from "../context/Authcontext";
 import { useNavigate } from "react-router-dom";
+import { logOutAsync } from "../Store/slices/authSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../fierbase";
 
 function Home() {
-  const myContect = useContext(Authcontext);
+  const [currentUser,setCrrentuser] = useState('')  
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch()
   useEffect(() => {
-    if (user == null) {
-      navigate("/");
-    }
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCrrentuser(user)
+      }
+    });
   }, []);
   return (
     <>
-      <h1>{user&& user.email}</h1>
+      <h1>{currentUser&& currentUser.email}</h1>
+      {/* <h1>{user&& user.displayName}</h1> */}
       <button
         onClick={() => {
-          myContect.logout();
+          dispatch(logOutAsync());
           navigate("/");
         }}
       >
